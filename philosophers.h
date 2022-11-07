@@ -6,7 +6,7 @@
 /*   By: rlaforge <rlaforge@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/04 17:30:58 by rlaforge          #+#    #+#             */
-/*   Updated: 2022/11/07 16:45:38 by rlaforge         ###   ########.fr       */
+/*   Updated: 2022/11/08 00:36:58 by rlaforge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,11 +36,12 @@ typedef struct s_vars
 	int		t_sleep;
 	int		n_eat;
 	t_philo	*philo_list;
+	pthread_mutex_t mutex;
 }			t_vars;
 
 void		display_state(int num, char *statemsg);
 void		ft_error(char *errmsg);
-void		parse(int ac, char **av, t_vars vars);
+void		parse(int ac, char **av, t_vars *vars);
 int			get_time(void);
 
 char		*ft_itoa(int n);
