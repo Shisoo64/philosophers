@@ -1,11 +1,12 @@
-SRCS =	src/main.c \
-	src/utils.c
+SRCS =	main.c \
+	utils.c \
+	ft_atoi.c \
+	ft_itoa.c \
+	ft_put.c
 
 CC = gcc
 
-CFLAGS = -g -Wall -Wextra -Werror
-
-LIBFT = libft/libft.a
+CFLAGS = -g -Wall -Wextra -Werror -lpthread
 
 NAME = philosophers
 
@@ -14,13 +15,10 @@ OBJS = $(SRCS:.c=.o)
 all : $(NAME)
 
 .c.o :
-	$(CC) $(CFLAGS) -Llibft -lft -c $< -o $(<:.c=.o)
+	$(CC) $(CFLAGS) -c $< -o $(<:.c=.o)
 
-$(LIBFT) :
-	make -C libft/
-
-$(NAME) : compiling $(OBJS) $(LIBFT)
-	$(CC) $(OBJS) $(CFLAGS) -Llibft -lft  -o $(NAME)
+$(NAME) : compiling $(OBJS)
+	$(CC) $(OBJS) $(CFLAGS) -o $(NAME)
 	@echo "\033[1;32m📦 $(NAME) compiled!\033[0m"
 	@echo "\e[1m   <+><+><+><+><+>\033[0m"
 
@@ -34,7 +32,6 @@ compiling :
 
 clean :
 	rm -f $(OBJS)
-	make -C libft/ fclean
 	@echo "\033[m🧹 $(NAME) binary files cleaned!\033[0m"
 
 fclean : clean
