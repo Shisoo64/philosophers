@@ -6,86 +6,87 @@
 /*   By: rlaforge <rlaforge@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/04 17:30:58 by rlaforge          #+#    #+#             */
-/*   Updated: 2022/11/08 00:39:06 by rlaforge         ###   ########.fr       */
+/*   Updated: 2022/11/08 18:01:40 by rlaforge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-int	philo_eat(int num, t_vars *vars)
+int	philo_eat(t_philo *philo)
 {
-	if (!vars->philo_list[num - 1].iseating && vars->philo_list[num - 1].right
-		&& !vars->philo_list[num].left)
-	{	
-		pthread_mutex_lock(&vars->mutex);
-		vars->philo_list[num - 1].right = 0;
-		vars->philo_list[num].left = 1;
-		pthread_mutex_unlock(&vars->mutex);
-	}
-	if (!vars->philo_list[num + 1].iseating && vars->philo_list[num + 1].left
-		&& !vars->philo_list[num].right)
-	{
-		pthread_mutex_lock(&vars->mutex);
-		vars->philo_list[num + 1].left = 0;
-		vars->philo_list[num].right = 1;
-		pthread_mutex_unlock(&vars->mutex);
-	}
-	if (!vars->philo_list[num].right || !vars->philo_list[num].left)
-		return (1);
-	display_state(num, " is eating");
-	vars->philo_list[num].iseating = 1;
-	usleep(vars->t_eat);
-	vars->philo_list[num].iseating = 0;
-	vars->philo_list[num].starve = get_time() + vars->t_eat;
+	pthread_mutex_lock(philo->left);
+	pthread_mutex_lock(&philo->right);
+	display_state(philo, " is eating");
+	philo->iseating = 1;
+	usleep(philo->vars->t_eat);
+	philo->iseating = 0;
+	philo->starve = get_time() + philo->vars->t_eat;
+	pthread_mutex_unlock(philo->left);
+	pthread_mutex_unlock(&philo->right);
 	return (0);
 }
 
-void	philo_sleep(int num, t_vars *vars)
+void	philo_sleep(t_philo *philo)
 {
-	display_state(num, " is sleeping");
-	vars->philo_list[num].issleeping = 1;
-	usleep(vars->t_sleep);
-	vars->philo_list[num].issleeping = 0;
-	display_state(num, " is thinking");
+	display_state(philo, " is sleeping");
+	philo->issleeping = 1;
+	usleep(philo->vars->t_sleep);
+	philo->issleeping = 0;
+	display_state(philo, " is thinking");
 }
 
-void	*routine(void *vars)
+void	*routine(void *p)
 {
-	t_vars	*v;
+	t_philo	*philo;
 
-	v = (t_vars *)vars;
-	while (v->philo_list[v->id].starve != get_time())
+	philo = (t_philo *)p;
+	while (philo->starve != get_time())
 	{
-		if (!v->philo_list[v->id].issleeping && !v->philo_list[v->id].iseating)
+		if (!philo->issleeping && !philo->iseating)
 		{
-			if (philo_eat(v->id, v))
-				philo_sleep(v->id, v);
+			if (philo_eat(philo))
+				philo_sleep(philo);
 		}
 	}
-	display_state(v->id, " died");
+	display_state(philo, " died");
 	exit(0);
+}
+
+void	init_philo(t_vars *vars, t_philo *philos)
+{
+	int	i;
+
+	i = -1;
+	while (++i <= vars->number)
+	{
+		pthread_mutex_init(&philos[i].right, NULL);
+
+
+
+
+
+		philos[i].left = &philos[i - 1].right;
+
+
+
+
+		philos[i].vars = vars;
+		if (pthread_create(&philos[i].philo_t, NULL, &routine,
+				&philos[i]) == 1)
+			ft_error("Thread error.");
+	}
 }
 
 int	main(int ac, char **av)
 {
-	t_vars		vars;
-	pthread_t	*philos;
-	int			i;
+	t_vars	vars;
+	int		i;
 
-	parse(ac, av, &vars);
-	philos = malloc(sizeof(pthread_t) * vars.number);
+	parse_vars(ac, av, &vars);
+	init_philo(&vars, vars.philos);
 	pthread_mutex_init(&vars.mutex, NULL);
 	i = -1;
 	while (++i <= vars.number)
-	{
-		vars.id = i;
-		if (pthread_create(&philos[i], NULL, &routine, &vars) == 1)
-			ft_error("Thread error.");
-	}
-	i = -1;
-	while (++i <= vars.number)
-		pthread_join(philos[i], NULL);
+		pthread_join(vars.philos[i].philo_t, NULL);
 	pthread_mutex_destroy(&vars.mutex);
-	free(vars.philo_list);
-	free(philos);
 }

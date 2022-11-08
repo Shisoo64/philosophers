@@ -6,7 +6,7 @@
 /*   By: rlaforge <rlaforge@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/04 17:30:58 by rlaforge          #+#    #+#             */
-/*   Updated: 2022/11/08 00:39:56 by rlaforge         ###   ########.fr       */
+/*   Updated: 2022/11/08 17:12:24 by rlaforge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int	check_vars(t_vars *vars)
 	return (0);
 }
 
-void	parse(int ac, char **av, t_vars *vars)
+void	parse_vars(int ac, char **av, t_vars *vars)
 {
 	if (ac < 5 || ac > 6)
 		ft_error("Wrong argument number.");
@@ -27,7 +27,6 @@ void	parse(int ac, char **av, t_vars *vars)
 	vars->t_die = ft_atoi(av[2]);
 	vars->t_eat = ft_atoi(av[3]);
 	vars->t_sleep = ft_atoi(av[4]);
-	vars->philo_list = malloc(sizeof(t_philo) * vars->number);
 	if (ac == 6)
 		vars->n_eat = ft_atoi(av[5]);
 	else
@@ -50,14 +49,11 @@ int	get_time(void)
 	return ((tv.tv_sec) * 1000 + (tv.tv_usec) / 1000);
 }
 
-void	display_state(int num, char *statemsg)
+void	display_state(t_philo *philo, char *statemsg)
 {
-	/*
-	int	timestamp;
-
-	timestamp = get_time();
-	ft_putstr_fd(ft_itoa(timestamp), 1);*/
+	pthread_mutex_unlock(&philo->vars->mutex);
 	ft_putchar_fd(' ', 1);
-	ft_putstr_fd(ft_itoa(num + 1), 1);
+	ft_putstr_fd(ft_itoa(philo->id + 1), 1);
 	ft_putendl_fd(statemsg, 1);
+	pthread_mutex_unlock(&philo->vars->mutex);
 }
