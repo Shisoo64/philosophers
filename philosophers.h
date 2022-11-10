@@ -6,7 +6,7 @@
 /*   By: rlaforge <rlaforge@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/04 17:30:58 by rlaforge          #+#    #+#             */
-/*   Updated: 2022/11/08 18:02:58 by rlaforge         ###   ########.fr       */
+/*   Updated: 2022/11/10 16:45:16 by rlaforge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,9 @@ typedef struct s_vars
 	int				t_eat;
 	int				t_sleep;
 	int				n_eat;
+	int				starttime;
 	t_philo			philos[256];
-	pthread_mutex_t	mutex;
+	pthread_mutex_t	display;
 }					t_vars;
 
 void				display_state(t_philo *philo, char *statemsg);

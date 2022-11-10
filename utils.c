@@ -6,7 +6,7 @@
 /*   By: rlaforge <rlaforge@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/04 17:30:58 by rlaforge          #+#    #+#             */
-/*   Updated: 2022/11/08 17:12:24 by rlaforge         ###   ########.fr       */
+/*   Updated: 2022/11/10 17:56:52 by rlaforge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,10 +27,10 @@ void	parse_vars(int ac, char **av, t_vars *vars)
 	vars->t_die = ft_atoi(av[2]);
 	vars->t_eat = ft_atoi(av[3]);
 	vars->t_sleep = ft_atoi(av[4]);
+	vars->starttime = get_time();
+	vars->n_eat = 0;
 	if (ac == 6)
 		vars->n_eat = ft_atoi(av[5]);
-	else
-		vars->n_eat = 0;
 	if (check_vars(vars))
 		ft_error("Wrong argument.");
 }
@@ -51,9 +51,10 @@ int	get_time(void)
 
 void	display_state(t_philo *philo, char *statemsg)
 {
-	pthread_mutex_unlock(&philo->vars->mutex);
+	pthread_mutex_lock(&philo->vars->display);
+	ft_putstr_fd(ft_itoa(get_time() - philo->vars->starttime), 1);
 	ft_putchar_fd(' ', 1);
 	ft_putstr_fd(ft_itoa(philo->id + 1), 1);
 	ft_putendl_fd(statemsg, 1);
-	pthread_mutex_unlock(&philo->vars->mutex);
+	pthread_mutex_unlock(&philo->vars->display);
 }
