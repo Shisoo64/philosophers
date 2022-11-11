@@ -1,5 +1,6 @@
 SRCS =	main.c \
 	utils.c \
+	init.c \
 	ft_atoi.c \
 	ft_itoa.c \
 	ft_put.c

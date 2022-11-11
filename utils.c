@@ -6,34 +6,11 @@
 /*   By: rlaforge <rlaforge@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/04 17:30:58 by rlaforge          #+#    #+#             */
-/*   Updated: 2022/11/10 17:56:52 by rlaforge         ###   ########.fr       */
+/*   Updated: 2022/11/11 13:35:21 by rlaforge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
-
-int	check_vars(t_vars *vars)
-{
-	if (vars->number < 1)
-		return (1);
-	return (0);
-}
-
-void	parse_vars(int ac, char **av, t_vars *vars)
-{
-	if (ac < 5 || ac > 6)
-		ft_error("Wrong argument number.");
-	vars->number = ft_atoi(av[1]);
-	vars->t_die = ft_atoi(av[2]);
-	vars->t_eat = ft_atoi(av[3]);
-	vars->t_sleep = ft_atoi(av[4]);
-	vars->starttime = get_time();
-	vars->n_eat = 0;
-	if (ac == 6)
-		vars->n_eat = ft_atoi(av[5]);
-	if (check_vars(vars))
-		ft_error("Wrong argument.");
-}
 
 void	ft_error(char *errmsg)
 {
@@ -41,7 +18,7 @@ void	ft_error(char *errmsg)
 	exit(1);
 }
 
-int	get_time(void)
+long long	get_time(void)
 {
 	struct timeval	tv;
 
