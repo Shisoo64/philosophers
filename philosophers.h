@@ -6,7 +6,7 @@
 /*   By: rlaforge <rlaforge@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/04 17:30:58 by rlaforge          #+#    #+#             */
-/*   Updated: 2022/11/11 13:36:48 by rlaforge         ###   ########.fr       */
+/*   Updated: 2022/11/15 18:23:45 by rlaforge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include <stdlib.h>
 # include <sys/time.h>
 # include <unistd.h>
+# include <stdio.h>
 
 struct		s_vars;
 
@@ -24,6 +25,7 @@ typedef struct s_philo
 {
 	int				id;
 	long long		starve;
+	int				n_eat;
 	pthread_t		philo_t;
 	pthread_mutex_t	*left;
 	pthread_mutex_t	right;
@@ -37,10 +39,12 @@ typedef struct s_vars
 	int				t_eat;
 	int				t_sleep;
 	int				n_eat;
+	int				n_hungry;
 	long long		starttime;
 	t_philo			philos[256];
 	pthread_mutex_t	display;
 	pthread_mutex_t	starve_m;
+	pthread_mutex_t	hungry_m;
 	int				death;
 }					t_vars;
 
