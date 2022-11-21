@@ -6,7 +6,7 @@
 /*   By: rlaforge <rlaforge@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/04 17:30:58 by rlaforge          #+#    #+#             */
-/*   Updated: 2022/11/15 18:26:11 by rlaforge         ###   ########.fr       */
+/*   Updated: 2022/11/21 19:40:14 by rlaforge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,12 +29,10 @@ long long	get_time(void)
 void	display_state(t_philo *philo, char *statemsg)
 {
 	pthread_mutex_lock(&philo->vars->display);
-	pthread_mutex_lock(&philo->vars->starve_m);
-	if (!philo->vars->death)
+	if (!death_check(philo->vars) && !fed_check(philo->vars))
 	{
 		printf("%lld %d %s\n", get_time() - philo->vars->starttime,
 			philo->id + 1, statemsg);
 	}
-	pthread_mutex_unlock(&philo->vars->starve_m);
 	pthread_mutex_unlock(&philo->vars->display);
 }

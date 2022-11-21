@@ -6,7 +6,7 @@
 /*   By: rlaforge <rlaforge@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 13:35:07 by rlaforge          #+#    #+#             */
-/*   Updated: 2022/11/15 17:46:05 by rlaforge         ###   ########.fr       */
+/*   Updated: 2022/11/21 17:58:38 by rlaforge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 int	check_vars(t_vars *vars)
 {
 	if (vars->number < 1 || vars->number > 256)
+		return (1);
+	if (vars->t_die < 1 || vars->t_eat < 1 || vars->t_sleep < 1)
 		return (1);
 	return (0);
 }
@@ -29,7 +31,7 @@ void	parse_vars(int ac, char **av, t_vars *vars)
 	vars->t_sleep = ft_atoi(av[4]);
 	vars->starttime = get_time();
 	vars->death = 0;
-	vars->n_hungry = vars->number;
+	vars->n_fed = vars->number;
 	vars->n_eat = -1;
 	if (ac == 6)
 		vars->n_eat = ft_atoi(av[5]);
@@ -58,6 +60,6 @@ void	init_philo(t_vars *vars, t_philo *philos)
 		philos[0].left = &philos[i].right;
 	while (i-- != 0)
 		if (pthread_create(&philos[i].philo_t, NULL, &routine,
-				&philos[i]) == 1)
+				&philos[i]) != 0)
 			ft_error("Thread error.");
 }
