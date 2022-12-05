@@ -6,7 +6,7 @@
 /*   By: rlaforge <rlaforge@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/04 17:30:58 by rlaforge          #+#    #+#             */
-/*   Updated: 2022/12/05 15:24:56 by rlaforge         ###   ########.fr       */
+/*   Updated: 2022/12/05 19:07:31 by rlaforge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,24 +35,24 @@ void	philo_sleep(t_philo *philo)
 
 int	death_check(t_vars *vars)
 {
-	int	i;
+	int	val;
 
 	pthread_mutex_lock(&vars->death_m);
-	i = vars->death;
+	val = vars->death;
 	pthread_mutex_unlock(&vars->death_m);
-	return (i);
+	return (val);
 }
 
 int	fed_check(t_vars *vars)
 {
-	int	b;
+	int	val;
 
 	pthread_mutex_lock(&vars->fed_m);
-	b = 0;
+	val = 0;
 	if (vars->n_fed == 0)
-		b = 1;
+		val = 1;
 	pthread_mutex_unlock(&vars->fed_m);
-	return (b);
+	return (val);
 }
 
 void	*routine(void *p)
@@ -61,15 +61,14 @@ void	*routine(void *p)
 
 	philo = (t_philo *)p;
 	if (philo->id % 2 == 0)
-		usleep(2500);
+		usleep(5000);
 	while (1)
 	{
 		if (death_check(philo->vars) || fed_check(philo->vars))
 			return (NULL);
 		display_state(philo, "is thinking");
 		philo_eat(philo);
-		if (death_check(philo->vars) || fed_check(philo->vars))
-			return (NULL);
+
 		if (philo->n_eat != -1)
 		{
 			pthread_mutex_lock(&philo->vars->fed_m);
@@ -95,8 +94,10 @@ void	death_watcher(t_vars *vars)
 		{
 			vars->death = 1;
 			pthread_mutex_unlock(&vars->death_m);
+			pthread_mutex_lock(&vars->display);
 			printf("%lld %d %s\n", get_time() - vars->starttime,
 				vars->philos[i].id + 1, "died");
+			pthread_mutex_unlock(&vars->display);
 			return ;
 		}
 		pthread_mutex_unlock(&vars->death_m);
@@ -120,10 +121,10 @@ int	main(int ac, char **av)
 		pthread_mutex_unlock(&vars.philos[0].right);
 	i = -1;
 	while (++i < vars.number)
-	{
 		pthread_join(vars.philos[i].philo_t, NULL);
+	i = -1;
+	while (++i < vars.number)
 		pthread_mutex_destroy(&vars.philos[i].right);
-	}
 	pthread_mutex_destroy(&vars.display);
 	pthread_mutex_destroy(&vars.death_m);
 	pthread_mutex_destroy(&vars.fed_m);
