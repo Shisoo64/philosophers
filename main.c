@@ -6,7 +6,7 @@
 /*   By: rlaforge <rlaforge@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/04 17:30:58 by rlaforge          #+#    #+#             */
-/*   Updated: 2022/11/21 19:41:09 by rlaforge         ###   ########.fr       */
+/*   Updated: 2022/12/05 15:24:56 by rlaforge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,14 +45,14 @@ int	death_check(t_vars *vars)
 
 int	fed_check(t_vars *vars)
 {
-	int	i;
+	int	b;
 
 	pthread_mutex_lock(&vars->fed_m);
-	i = 0;
+	b = 0;
 	if (vars->n_fed == 0)
-		i = 1;
+		b = 1;
 	pthread_mutex_unlock(&vars->fed_m);
-	return (i);
+	return (b);
 }
 
 void	*routine(void *p)
@@ -61,7 +61,7 @@ void	*routine(void *p)
 
 	philo = (t_philo *)p;
 	if (philo->id % 2 == 0)
-		usleep(500);
+		usleep(2500);
 	while (1)
 	{
 		if (death_check(philo->vars) || fed_check(philo->vars))
@@ -124,7 +124,6 @@ int	main(int ac, char **av)
 		pthread_join(vars.philos[i].philo_t, NULL);
 		pthread_mutex_destroy(&vars.philos[i].right);
 	}
-	//pthread_mutex_unlock(&vars.death_m);
 	pthread_mutex_destroy(&vars.display);
 	pthread_mutex_destroy(&vars.death_m);
 	pthread_mutex_destroy(&vars.fed_m);
