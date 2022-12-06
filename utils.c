@@ -6,7 +6,7 @@
 /*   By: rlaforge <rlaforge@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/04 17:30:58 by rlaforge          #+#    #+#             */
-/*   Updated: 2022/12/05 15:57:05 by rlaforge         ###   ########.fr       */
+/*   Updated: 2022/12/06 14:57:32 by rlaforge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,4 +35,26 @@ void	display_state(t_philo *philo, char *statemsg)
 			philo->id + 1, statemsg);
 	}
 	pthread_mutex_unlock(&philo->vars->display);
+}
+
+int	death_check(t_vars *vars)
+{
+	int	val;
+
+	pthread_mutex_lock(&vars->death_m);
+	val = vars->death;
+	pthread_mutex_unlock(&vars->death_m);
+	return (val);
+}
+
+int	fed_check(t_vars *vars)
+{
+	int	val;
+
+	pthread_mutex_lock(&vars->fed_m);
+	val = 0;
+	if (vars->n_fed == 0)
+		val = 1;
+	pthread_mutex_unlock(&vars->fed_m);
+	return (val);
 }

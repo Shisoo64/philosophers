@@ -6,7 +6,7 @@
 /*   By: rlaforge <rlaforge@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/04 17:30:58 by rlaforge          #+#    #+#             */
-/*   Updated: 2022/12/05 19:07:31 by rlaforge         ###   ########.fr       */
+/*   Updated: 2022/12/06 14:57:01 by rlaforge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,34 +27,6 @@ void	philo_eat(t_philo *philo)
 	pthread_mutex_unlock(&philo->right);
 }
 
-void	philo_sleep(t_philo *philo)
-{
-	display_state(philo, "is sleeping");
-	usleep(philo->vars->t_sleep * 1000);
-}
-
-int	death_check(t_vars *vars)
-{
-	int	val;
-
-	pthread_mutex_lock(&vars->death_m);
-	val = vars->death;
-	pthread_mutex_unlock(&vars->death_m);
-	return (val);
-}
-
-int	fed_check(t_vars *vars)
-{
-	int	val;
-
-	pthread_mutex_lock(&vars->fed_m);
-	val = 0;
-	if (vars->n_fed == 0)
-		val = 1;
-	pthread_mutex_unlock(&vars->fed_m);
-	return (val);
-}
-
 void	*routine(void *p)
 {
 	t_philo	*philo;
@@ -68,7 +40,6 @@ void	*routine(void *p)
 			return (NULL);
 		display_state(philo, "is thinking");
 		philo_eat(philo);
-
 		if (philo->n_eat != -1)
 		{
 			pthread_mutex_lock(&philo->vars->fed_m);
@@ -77,7 +48,8 @@ void	*routine(void *p)
 				philo->vars->n_fed--;
 			pthread_mutex_unlock(&philo->vars->fed_m);
 		}
-		philo_sleep(philo);
+		display_state(philo, "is sleeping");
+		usleep(philo->vars->t_sleep * 1000);
 	}
 	return (NULL);
 }
