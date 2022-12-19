@@ -6,7 +6,7 @@
 /*   By: rlaforge <rlaforge@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 13:35:07 by rlaforge          #+#    #+#             */
-/*   Updated: 2022/12/12 16:17:42 by rlaforge         ###   ########.fr       */
+/*   Updated: 2022/12/19 11:46:47 by rlaforge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int	check_vars(t_vars *vars)
 	if (vars->number <= 0 || vars->t_die <= 0 || vars->t_eat <= 0
 		|| vars->t_sleep <= 0 || vars->n_eat < 0)
 		return (1);
-	if (vars->number < 1 || vars->number > 256)
+	if (vars->number < 1 || vars->number > 512)
 		return (1);
 	if (vars->t_die < 1 || vars->t_eat < 1 || vars->t_sleep < 1)
 		return (1);
@@ -27,7 +27,10 @@ int	check_vars(t_vars *vars)
 int	parse_vars(int ac, char **av, t_vars *vars)
 {
 	if (ac < 5 || ac > 6)
+	{
 		ft_error("Wrong argument number.");
+		return (1);
+	}
 	vars->number = ft_atoi(av[1]);
 	vars->t_die = ft_atoi(av[2]);
 	vars->t_eat = ft_atoi(av[3]);

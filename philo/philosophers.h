@@ -6,7 +6,7 @@
 /*   By: rlaforge <rlaforge@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/04 17:30:58 by rlaforge          #+#    #+#             */
-/*   Updated: 2022/12/12 16:24:16 by rlaforge         ###   ########.fr       */
+/*   Updated: 2022/12/19 11:46:57 by rlaforge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ typedef struct s_vars
 	int				n_eat;
 	int				n_fed;
 	long long		starttime;
-	t_philo			philos[256];
+	t_philo			philos[512];
 	pthread_mutex_t	display;
 	pthread_mutex_t	death_m;
 	pthread_mutex_t	fed_m;
